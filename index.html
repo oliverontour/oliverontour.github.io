@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oliver on Tour – Web-Visitenkarte von Oliver Groß</title>
+    <meta name="description" content="Oliver on Tour – Themen, Projekte und Begegnungen von Oliver Groß: Parsifal, St. Georg auf der Reichenau, Moldauklöster, Goethes Märchen, Eurythmie & Verantwortungseigentum.">
+    <style>
+        :root {
+            --bg-base: #faf8f5;
+            --text-main: #222629;
+            --text-muted: #525960;
+            --accent-primary: #3b4d6b;    /* Tiefes Ottonen-/Freskenblau */
+            --accent-secondary: #6b4c7a;  /* Violett des Märchenfensters */
+            --accent-warm: #b87d4b;       /* Warmes Ocker / Gold */
+            --card-bg: rgba(255, 255, 255, 0.78);
+            --card-border: rgba(255, 255, 255, 0.9);
+            --shadow-soft: 0 12px 36px rgba(34, 38, 41, 0.06);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-base);
+            line-height: 1.72;
+            font-size: 17px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Künstlerischer, atmosphärischer Hintergrund (Aquarell- & Fresken-Anmutung) */
+        .artistic-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 12% 18%, rgba(107, 76, 122, 0.14) 0%, transparent 48%),
+                radial-gradient(circle at 88% 22%, rgba(59, 77, 107, 0.15) 0%, transparent 52%),
+                radial-gradient(circle at 75% 68%, rgba(184, 125, 75, 0.13) 0%, transparent 50%),
+                radial-gradient(circle at 20% 82%, rgba(72, 117, 112, 0.12) 0%, transparent 48%),
+                linear-gradient(180deg, #fcfaf7 0%, #f4efe8 50%, #f8f5f0 100%);
+        }
+
+        .artistic-canvas::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(59, 77, 107, 0.06) 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.6;
+        }
+
+        /* Navigation */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(250, 248, 245, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(59, 77, 107, 0.08);
+        }
+
+        .nav-container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            color: var(--accent-primary);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .brand span {
+            font-weight: 400;
+            color: var(--accent-secondary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent-primary);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: 1px solid rgba(59, 77, 107, 0.2);
+            border-radius: 8px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.95rem;
+            color: var(--accent-primary);
+            cursor: pointer;
+        }
+
+        /* Layout Container */
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+
+        section {
+            padding-top: 4.5rem;
+            scroll-margin-top: 4.5rem;
+        }
+
+        /* Hero / Hauptbereich */
+        .hero {
+            padding-top: 3.5rem;
+            padding-bottom: 1rem;
+        }
+
+        .motto-badge {
+            display: inline-block;
+            background: rgba(107, 76, 122, 0.1);
+            color: var(--accent-secondary);
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-bottom: 1.25rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.3rem, 5vw, 3.6rem);
+            line-height: 1.12;
+            letter-spacing: -0.03em;
+            color: var(--accent-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            max-width: 720px;
+        }
+
+        /* Künstlerisches Hauptbild (SVG-Komposition als Platzhalter / Kunstwerk) */
+        .hero-artwork {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(135deg, #2d3e5e 0%, #5a4269 48%, #b37846 100%);
+            position: relative;
+        }
+
+        .hero-artwork svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 360px;
+        }
+
+        .hero-quote {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.75rem;
+            right: 1.75rem;
+            color: #ffffff;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        .hero-quote p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        /* Karten-Stil */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-size: clamp(1.6rem, 3vw, 2.1rem);
+            color: var(--accent-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.4rem;
+            line-height: 1.25;
+        }
+
+        .topic-tag {
+            display: inline-block;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            color: var(--accent-warm);
+            margin-bottom: 0.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            color: var(--accent-secondary);
+            margin-top: 1.75rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .card p {
+            margin-bottom: 1.15rem;
+        }
+
+        .card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Themen-Übersicht Pills */
+        .topic-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1.5rem;
+        }
+
+        .topic-pills a {
+            text-decoration: none;
+            background: rgba(59, 77, 107, 0.08);
+            color: var(--accent-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .topic-pills a:hover {
+            background: var(--accent-primary);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        /* Highlight-Box (z.B. Vortragstermine / Angebote) */
+        .highlight-box {
+            background: rgba(59, 77, 107, 0.05);
+            border-left: 4px solid var(--accent-secondary);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            padding: 1.5rem 1.75rem;
+            margin-top: 1.75rem;
+        }
+
+        .highlight-box h4 {
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .quote-callout {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin: 0.75rem 0;
+        }
+
+        .clean-list {
+            list-style: none;
+            margin: 0.75rem 0 1rem;
+        }
+
+        .clean-list li {
+            position: relative;
+            padding-left: 1.35rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .clean-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-warm);
+            font-weight: bold;
+        }
+
+        .offer-banner {
+            margin-top: 1.5rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid rgba(59, 77, 107, 0.12);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+            color: var(--accent-primary);
+        }
+
+        .btn-link {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 0.55rem 1.2rem;
+            border-radius: 999px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .btn-link:hover {
+            background: var(--accent-secondary);
+        }
+
+        /* Vita Grid */
+        .vita-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+
+        .vita-column {
+            background: rgba(255, 255, 255, 0.55);
+            padding: 1.4rem;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(59, 77, 107, 0.08);
+        }
+
+        .vita-column h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            border-bottom: 1px solid rgba(59, 77, 107, 0.12);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.85rem;
+        }
+
+        /* Footer & Rechtliches */
+        footer {
+            background: rgba(34, 38, 41, 0.04);
+            border-top: 1px solid rgba(59, 77, 107, 0.12);
+            padding: 3.5rem 1.5rem 4rem;
+            margin-top: 3rem;
+        }
+
+        .footer-inner {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .contact-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(59, 77, 107, 0.12);
+            margin-bottom: 2.5rem;
+        }
+
+        .legal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .legal-grid h3 {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin-bottom: 0.65rem;
+        }
+
+        .legal-grid p {
+            margin-bottom: 0.75rem;
+        }
+
+        .copyright {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Mobile Optimierung */
+        @media (max-width: 820px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                width: 100%;
+                padding-top: 0.75rem;
+                border-top: 1px solid rgba(59, 77, 107, 0.1);
+            }
+
+            nav.open {
+                display: block;
+            }
+
+            .nav-container {
+                flex-wrap: wrap;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 0.65rem;
+            }
+
+            .card {
+                padding: 1.65rem 1.35rem;
+            }
+
+            .hero-quote {
+                position: static;
+                background: rgba(34, 38, 41, 0.35);
+                padding: 1rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="artistic-canvas" aria-hidden="true"></div>
+
+    <header>
+        <div class="nav-container">
+            <a href="#start" class="brand">Oliver <span>on Tour</span></a>
+            <button class="menu-toggle" aria-label="Menü öffnen" onclick="document.getElementById('main-nav').classList.toggle('open')">
+                Menü ☰
+            </button>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="#parsifal" onclick="closeMenu()">Parsifal</a></li>
+                    <li><a href="#moldaukloester" onclick="closeMenu()">Moldauklöster</a></li>
+                    <li><a href="#st-georg" onclick="closeMenu()">St. Georg</a></li>
+                    <li><a href="#goethes-maerchen" onclick="closeMenu()">Goethes Märchen</a></li>
+                    <li><a href="#bewegung" onclick="closeMenu()">Bewegung & Eurythmie</a></li>
+                    <li><a href="#verantwortungseigentum" onclick="closeMenu()">Verantwortungseigentum</a></li>
+                    <li><a href="#vita" onclick="closeMenu()">Vita</a></li>
+                    <li><a href="#kontakt" onclick="closeMenu()">Kontakt & Impressum</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO & EINSTIEG -->
+        <section id="start" class="hero">
+            <div class="motto-badge">„weil ich es liebe“ — Nicht nur der Mensch braucht das Wissen, das Wissen braucht den Menschen</div>
+            <h1>Oliver on Tour</h1>
+            <p class="hero-subtitle">Web-Visitenkarte von Oliver Groß — Begegnungen mit Kunst, Geschichte, Bewegung und lebendiger Unternehmenskultur.</p>
+
+            <div class="hero-artwork" role="img" aria-label="Künstlerische Komposition aus Licht, Farbe und Bewegung">
+                <svg viewBox="0 0 1200 380" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#2c3e5e" />
+                            <stop offset="50%" stop-color="#684978" />
+                            <stop offset="100%" stop-color="#c2834e" />
+                        </linearGradient>
+                        <radialGradient id="sun" cx="72%" cy="38%" r="45%">
+                            <stop offset="0%" stop-color="#fff4d4" stop-opacity="0.75" />
+                            <stop offset="50%" stop-color="#e3a869" stop-opacity="0.25" />
+                            <stop offset="100%" stop-color="#684978" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <rect width="1200" height="380" fill="url(#g1)" />
+                    <rect width="1200" height="380" fill="url(#sun)" />
+                    <!-- Fließende, eurythmische Linien -->
+                    <path d="M-50,290 C220,160 440,340 720,190 C940,70 1080,220 1260,130" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2.5" />
+                    <path d="M-50,320 C260,210 490,360 780,220 C980,120 1110,250 1260,170" fill="none" stroke="rgba(255,244,212,0.3)" stroke-width="1.5" />
+                    <circle cx="860" cy="145" r="78" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+                    <circle cx="860" cy="145" r="118" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+                </svg>
+                <div class="hero-quote">
+                    <p>„Mein Körper ist auch Ich – er ist nicht das Vehikel meiner Seele oder meines Geistes, er ist eine Ausdrucksform meiner Existenz.“</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="topic-tag">Willkommen</span>
+                <h2>Was mich bewegt und begeistert</h2>
+                <p>Diese Webseite ermöglicht auch mir selbst, die Themen in der Übersicht zu halten, denen ich viel Zeit und Liebe schenken durfte. Eigentlich ist es auch umgekehrt: Ich wurde beschenkt – durch wunderbare Eindrücke, unglaubliche Erlebnisse und Aha-Momente.</p>
+                <p>Ich habe Sport studiert an der Deutschen Sporthochschule Köln – aber eigentlich hat mich der Sport an sich nie wirklich interessiert, wohl aber die Bewegung und die Erfahrung der eigenen Leiblichkeit. Bewegung war und ist ein großer und wichtiger Teil meines Lebens.</p>
+                <p>Daneben bin ich vielseitig begeisterbar – und einige dieser Themen, die mich begeistern, stelle ich hier vor. Über Rückmeldungen, Anregungen von ebenso begeisterten Menschen und einen Austausch freue ich mich.</p>
+
+                <div class="topic-pills">
+                    <a href="#parsifal">Parsifal</a>
+                    <a href="#moldaukloester">Moldauklöster</a>
+                    <a href="#st-georg">St. Georg & Ottonen</a>
+                    <a href="#goethes-maerchen">Goethes Märchen</a>
+                    <a href="#bewegung">Bewegung & Eurythmie</a>
+                    <a href="#verantwortungseigentum">Verantwortungseigentum</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- THEMA 1: PARSIFAL -->
+        <section id="parsifal">
+            <article class="card">
+                <span class="topic-tag">Musik, Mythos & Eurythmie</span>
+                <h2>Parsifal</h2>
+                <p>Der Parsifal – oder besser: der <em>Parzival</em> von Wolfram von Eschenbach (geboren um 1160/80; gestorben um 1220) – begleitet mich schon seit meiner Jugend, seit der Parzival-Epoche in der Waldorfschule in der 10. oder 11. Klasse. Eins war schon damals klar: Die Geschichte mag im 9. Jahrhundert spielen, das Thema aber ist hochaktuell. Vielleicht ist das eines der Geheimnisse, um sich für ein solches Thema begeistern zu können – die Frage nach dem, was in der Geschichte als zeitloses Element schlummert und entschlüsselt werden will.</p>
+
+                <p>Richtig entzündet hat sich das Feuer dann mit dem <em>Parsifal</em> von Richard Wagner (1813–1883), in der Version, wie er am Goetheanum in Dornach 2022/2023 inszeniert und in den folgenden Jahren aufgeführt wurde. Unter der Leitung von Stefan Hasler wurde erstmals die Bewegungskunst Eurythmie in das Bühnenweihfestspiel (1882 in Bayreuth uraufgeführt) einbezogen. Im Vorfeld sind wunderbare Dinge geschehen: Eine gute Freundin wurde Teil des Eurythmie-Ensembles, und der Pianist Stefan Mickisch (1962–2021) legte über seine Aufnahmen am Flügel eine bedeutende Spur, indem er Wagner und den Parsifal ebenso kundig wie begeisternd spielt und erklärt.</p>
+
+                <p>Gleichzeitig stellte sich heraus, dass eine der wichtigsten Melodien des Parsifal – das Abendmahlsmotiv – ihren Ursprung am Bodensee hat, bei <strong>Hermannus Contractus von Reichenau</strong> (1013–1054). Zu jener Zeit lebte ich am Bodensee und kannte die Reichenau bereits durch die Weltkulturerbe-Basilika St. Georg. Vielleicht komponierte Hermannus unter dem Eindruck dieses ottonischen Bilderzyklus seinen berühmten Pfingsthymnus <em>Veni sancte spiritus</em>, der später zum unbeschreiblich schönen Beginn des Parsifal-Vorspiels wurde?</p>
+
+                <p>In den Jahren 2023, 2024 und 2025 reiste ich mit gut vorbereiteten Gruppen zu den Aufführungen nach Dornach. Mit großer Freude sehe ich nun den letzten Aufführungen im März 2027 entgegen. Auf Anfrage der Christengemeinschaft in Überlingen habe ich zudem einen eigenen Parsifal-Vortrag entwickelt, den ich gemeinsam mit <strong>Ernst Clauder am Cello</strong> gestalten darf.</p>
+
+                <div class="highlight-box">
+                    <h4>Vortragsreihe im Frühjahr 2027: Parsifal-Vortrag mit musikalischen Zitaten am Cello</h4>
+                    <p class="quote-callout">„Die Wunde schließt der Speer nur, der sie schlug“ (Richard Wagner, Parsifal)<br>Vom entfesselten Speer und seiner Rückkehr ins Gralsgebiet</p>
+                    <p>Anhand des Entwicklungswegs des Parsifal entfaltet Oliver Groß die Frage danach, wie die oft zerstörerisch wirkende Kraft des Menschen in schöpferische Bahnen finden kann – begleitet von musikalischen Zitaten am Cello von Ernst Clauder. Der Vortrag eignet sich ideal zur Einstimmung auf die letzten Aufführungen am Goetheanum (12. bis 21. März 2027; Infos: <a href="https://www.parsifal-wagner.ch" target="_blank" rel="noopener">www.parsifal-wagner.ch</a>).</p>
+                    <ul class="clean-list">
+                        <li><strong>Fr. 22. Januar 2027, 17:00 Uhr:</strong> PSZD Dortmund</li>
+                        <li><strong>Sa. 23. Januar 2027 (Uhrzeit folgt):</strong> Christengemeinschaft, Berlin</li>
+                        <li><strong>Fr. 12. Februar 2027, 19:00 Uhr:</strong> Rudolf Steiner Buchhandlung, Hamburg</li>
+                        <li><strong>Fr. 05. März 2027, 12:00 Uhr:</strong> Alanus Hochschule, Alfter</li>
+                        <li><strong>Fr. 05. März 2027, 18:00 Uhr:</strong> The New Yorker, Köln</li>
+                        <li><strong>Sa. 06. März 2027, 18:00 Uhr:</strong> Andreashof, Überlingen</li>
+                        <li><strong>So. 07. März 2027, 16:00 Uhr:</strong> Unternehmen Mitte, Basel</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <!-- THEMA 2: MOLDAUKLÖSTER -->
+        <section id="moldaukloester">
+            <article class="card">
+                <span class="topic-tag">Reise & Sakrale Kunst</span>
+                <h2>Die Moldauklöster in der Bukowina</h2>
+                <p>Rumänien habe ich 2020 erstmals besucht – zunächst Bukarest und die Region südlich der Karpaten. Immer wieder erreichten mich begeisterte Hinweise auf die „Moldauklöster“ in der Bukowina, weit im Osten des Landes. 2025 begab ich mich gemeinsam mit meinem Sohn auf eine abenteuerliche Autoreise über Wien, Budapest, Timișoara, die berühmte Passstraße Transfăgărășan über den Hauptkamm der Karpaten, Sibiu und Brașov quer durch Transsilvanien bis in die Bukowina.</p>
+
+                <p>Unsere Basis war das Dorf Moldovița. Besonders drei der Klosteranlagen mit ihren jeweiligen Klosterkirchen haben uns tief beeindruckt:</p>
+                <ul class="clean-list">
+                    <li><strong>Kloster Moldovița:</strong> Das Frauenkloster (heutige Verkündigungskirche errichtet 1532 unter Woiwode Petru Rareș) wirkt als das lieblichste der drei.</li>
+                    <li><strong>Kloster Sucevița:</strong> Die Kirche der Auferstehung (erbaut ab 1581 durch die Familie Movilă) präsentiert sich besonders wehrhaft und trutzig.</li>
+                    <li><strong>Kloster Voroneț:</strong> Die Kirche des Heiligen Georg (errichtet 1488 unter Stefan dem Großen) erscheint wie der Feingeist unter den dreien.</li>
+                </ul>
+
+                <p>Alle drei Anlagen sind harmonisch in die Hügel der Bukowina eingebettet und von einer Burgmauer umgeben. Betritt man durch das große Tor den gepflegten Garten, leuchtet einem die vollständig bemalte Außenfassade entgegen. Über und über mit Fresken bedeckt, wirkt die sonnenbeschienene Wand fast wie ein gotisches Glasfenster in St. Denis oder Chartres: Die dicken Mauern gewinnen eine überraschende Leichtigkeit, und was im Inneren der Kirche Programm ist, scheint hier nach außen zu dringen. Auch 2026 besuchte ich die Klöster erneut – und für 2027 ist bereits die nächste Reise geplant.</p>
+
+                <div class="offer-banner">
+                    <span>Bei Interesse biete ich gerne eine begleitete Studienreise zu den Moldauklöstern an.</span>
+                    <a href="mailto:oliver.gross.koeln@gmail.com?subject=Anfrage%20Studienreise%20Moldaukl%C3%B6ster" class="btn-link">Interesse anmelden</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- THEMA 3: ST. GEORG & DIE OTTONEN -->
+        <section id="st-georg">
+            <article class="card">
+                <span class="topic-tag">Ottonische Kunst & Geschichte</span>
+                <h2>St. Georg auf der Reichenau & die Zeit der Ottonen</h2>
+                <p>Die kleine Weltkulturerbe-Basilika St. Georg auf der Insel Reichenau beeindruckt vor allem durch ihren großen Bilderzyklus biblischer Heils- und Auferweckungsszenen aus ottonischer Zeit (um das Jahr 1000). Acht große rechteckige Wandbilder erzählen den Entwicklungsgang des Menschen. Auch wenn die Fresken nicht vollständig erhalten sind, ist das Betreten dieses kleinen Kirchenraums jedes Mal wie ein Wunder: Die Komposition, die Mäanderbänder und das Bildprogramm versetzen den Betrachter in eine andere Welt.</p>
+
+                <p>Die insgesamt acht Bilder – vier auf der Nordseite und vier auf der Südseite – bilden einerseits eine siebenstufige Entwicklung ab (wobei Bild 4 und 5 eine Einheit formen). Gleichzeitig stehen sich je zwei Bilder als korrespondierendes Paar direkt gegenüber: So findet sich an der Nordwand ganz im Westen die <em>Heilung des Besessenen von Gerasa</em>, während direkt gegenüber an der Südwand die <em>Auferweckung des Lazarus</em> dargestellt ist. Zudem ist jedes Bild in vier Ebenen gegliedert – ein weiteres Geheimnis, das sich beim gemeinsamen Betrachten erschließt.</p>
+
+                <p>Dieser Bilderzyklus verbindet sich mit meiner tiefen Begeisterung für die <strong>Ottonen</strong>: für Bischof <strong>Bernward von Hildesheim</strong> (um 960–1022), die Michaelskirche in Hildesheim (Grundsteinlegung 1010, Weihe der Unterkirche 1022), die große Bernwardstür (1015) und die Bernwardssäule im Hildesheimer Dom, ebenso wie für Kaiser Otto I., seinen Bruder Erzbischof Bruno von Köln, Kaiser Otto II., Kaiserin Theophanu und Otto III. Bruno und Theophanu ruhen in <strong>St. Pantaleon in Köln</strong>, wo ich an vielen Samstagen von 14 bis 16 Uhr ehrenamtlich Kirchenaufsicht halte.</p>
+
+                <div class="offer-banner">
+                    <span>Gerne biete ich Führungen in St. Georg (Reichenau), in Köln oder in Hildesheim an.</span>
+                    <a href="mailto:oliver.gross.koeln@gmail.com?subject=Anfrage%20F%C3%BChrung%20Ottonen%20%2F%20St.%20Georg" class="btn-link">Führung anfragen</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- THEMA 4: GOETHES MÄRCHEN -->
+        <section id="goethes-maerchen">
+            <article class="card">
+                <span class="topic-tag">Literatur & Bildbetrachtung</span>
+                <h2>Goethes Märchen & das Fenster am Andreashof</h2>
+                <p>Das Büchlein mit Goethes <em>Märchen</em> stand viele Jahre in meinem Regal, blieb mir jedoch lange fremd und verschlossen. Johann Wolfgang von Goethe (1749–1832) veröffentlichte dieses rätselhafte Werk 1795 zum Abschluss seiner <em>Unterhaltungen deutscher Ausgewanderten</em>.</p>
+
+                <p>2019 stand ich mit einer Freundin vor dem violetten Märchenfenster in der Kapelle im <strong>Andreashof bei Überlingen</strong> (1997 gestaltet von der Künstlerin Catherine Ann Schmid). Eigentlich wusste ich zu diesem Zeitpunkt noch gar nicht, welche Geschichte die Glasbilder erzählen – doch meine Begleitung stand wie gebannt davor. In einem der Motive entdeckten wir den stürzenden Chronos, und plötzlich verschmolzen Geschichte und Bild zu einem lebendigen Gesamteindruck. Bild für Bild erschloss sich das Märchen von der grünen Schlange und der schönen Lilie.</p>
+
+                <p>Daraus erwuchs eine mehrjährige intensive Beschäftigung und eine Reihe eigener Vorträge direkt vor dem Fenster. Für mich birgt Goethes Märchen die denkerische Grundlage der Anthroposophie – schon Rudolf Steiner (1861–1925) widmete ihm maßgebliche Betrachtungen wie seinen Aufsatz <em>Goethes geheime Offenbarung</em> (1899). Mir macht es große Freude, das Märchen zu erzählen, gemeinsam zu deuten und dem nachzuspüren, was Steiner darin entdeckte.</p>
+
+                <div class="offer-banner">
+                    <span>Bei Interesse biete ich gerne eine Märchenstunde vor dem Fenster im Andreashof an.</span>
+                    <a href="mailto:oliver.gross.koeln@gmail.com?subject=Anfrage%20M%C3%A4rchenstunde%20Andreashof" class="btn-link">Märchenstunde anfragen</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- THEMA 5: BEWEGUNG & EURYTHMIE -->
+        <section id="bewegung">
+            <article class="card">
+                <span class="topic-tag">Leiblichkeit & Tanz</span>
+                <h2>Bewegungskunst, Eurythmie & Zeitgenössischer Tanz</h2>
+                <p>Bewegung ist das rote Band meines Lebens: Kampfkunst (Wing Tsun und Escrima), Sportstudium, Yoga und die Eurythmie seit meiner Waldorfschulzeit sind für mich weit mehr als ein Hobby – sie sind unmittelbare Erfahrungsräume menschlicher Existenz.</p>
+
+                <p>Die <strong>Eurythmie</strong> wurde von Rudolf Steiner als neue Bewegungskunst initiiert – erste Keime zeigten sich bereits 1908, bevor sie ab 1912 konkret ausgearbeitet wurde. Die großen Grundlagenkurse – der Ton-Eurythmie-Kurs (Februar 1924) und der Laut-Eurythmie-Kurs (Juni/Juli 1924) – fanden schließlich in Dornach statt. Gegenwärtig darf ich im Rahmen meines Eurythmie-Studiums an der Alanus Hochschule tief in dieses künstlerische Feld eintauchen.</p>
+
+                <p>Gleichzeitig fasziniert mich der Blick auf die Entwicklung des <strong>Zeitgenössischen Tanzes</strong>: Er beginnt bei der Pionierin Isadora Duncan um 1900, führt über Wegbereiter wie Rudolf von Laban und Mary Wigman und reicht bis zu den großen Stimmen der jüngeren Tanzgeschichte und Gegenwart – dem revolutionären Tanztheater von Pina Bausch, den präzisen Dekonstruktionen von William Forsythe sowie den ausdrucksstarken Choreografien von Nacho Duato, Akram Khan und vielen anderen, die den Tanz fortlaufend neu definieren.</p>
+            </article>
+        </section>
+
+        <!-- THEMA 6: VERANTWORTUNGSEIGENTUM -->
+        <section id="verantwortungseigentum">
+            <article class="card">
+                <span class="topic-tag">Wirtschaft & Arbeitskultur</span>
+                <h2>Verantwortungseigentum</h2>
+                <p>Das Feld des Verantwortungseigentums ist mir besonders in meinen elf Jahren in leitender Position und Geschäftsführung bei der <strong>Sonett GmbH</strong> in Deggenhausen ans Herz gewachsen. Ein verwandter Gedanke findet sich im bedingungslosen Grundeinkommen: <em>Der Mensch kann eigentlich nicht für Geld arbeiten – aber er braucht Geld, um arbeiten zu können.</em> Auf ein Unternehmen übertragen lautet dieser Grundsatz: Ein Unternehmen existiert nicht für die Gewinne, sondern für sinnvolle Produkte oder Dienstleistungen – braucht aber Gewinne, um sich gesund entwickeln zu können.</p>
+
+                <p>Verantwortungseigentum bedeutet, ein Unternehmen nicht als spekulatives Privatvermögen zu begreifen, sondern als eigenständigen Organismus, für den Menschen auf Zeit Verantwortung übernehmen. Rechtlich wird dies häufig über Stiftungsmodelle gelöst – historisch wegweisend geprägt durch Ernst Abbe (1840–1905) mit der Gründung der Carl-Zeiss-Stiftung im Jahr 1889. Ein solches Unternehmen kann weder verkauft noch vererbt werden; der Einstieg in die Leitung erfolgt unabhängig von privater Kapitalkraft.</p>
+
+                <p>Wer dieses Konzept tiefer ergründet, stößt auch auf Rudolf Steiners Vortragszyklus <em>Das Karma des Berufes des Menschen</em> (1916, GA 172), in dem menschliche Arbeit aus einer rein ökonomischen Verengung gelöst und als schöpferisches Wirken für die Gemeinschaft verstanden wird. Bei Sonett verbindet sich dies unmittelbar mit partnerschaftlicher Führung, einer lebendigen Kultur der Zusammenarbeit im Sozialen sowie der dynamischen Qualität im Bereich Ökologie und Produktgestaltung.</p>
+            </article>
+        </section>
+
+        <!-- MINI-VITA -->
+        <section id="vita">
+            <div class="card">
+                <span class="topic-tag">Stationen & Engagement</span>
+                <h2>Mini-Vita</h2>
+                <div class="vita-grid">
+                    <div class="vita-column">
+                        <h3>Ausbildung & Weg</h3>
+                        <ul class="clean-list">
+                            <li>Geboren in den 70er Jahren in Braunschweig, Jugend in Hildesheim</li>
+                            <li>1993 Abitur an der Freien Waldorfschule Hildesheim</li>
+                            <li>Auslandsaufenthalte in Aix-en-Provence (Frankreich) und Peking (China)</li>
+                            <li>Abschluss an der Deutschen Sporthochschule Köln als Diplom-Sportwissenschaftler</li>
+                            <li>Kampfkunstlehrer (Wing Tsun & Escrima) sowie Yoga-Lehrer</li>
+                            <li>Eurythmie-Student an der Alanus Hochschule in Alfter</li>
+                        </ul>
+                    </div>
+
+                    <div class="vita-column">
+                        <h3>Berufserfahrung</h3>
+                        <ul class="clean-list">
+                            <li>Langjährige Leitung einer Schule für Bewegungskunst in Köln</li>
+                            <li>Dozent an der Deutschen Sporthochschule Köln und der Universität Bielefeld (Bewegungskunst & Sportpsychologie)</li>
+                            <li>5 Jahre geschäftsführender Gesellschafter, Rotonda Business-Club in Köln</li>
+                            <li>11 Jahre in leitender Position sowie Geschäftsführung, Sonett GmbH, Deggenhausen</li>
+                        </ul>
+                    </div>
+
+                    <div class="vita-column">
+                        <h3>Ehrenamt & Mitgliedschaften</h3>
+                        <ul class="clean-list">
+                            <li>Anthroposophische Gesellschaft</li>
+                            <li>Paul Schatz Gesellschaft</li>
+                            <li>Schweizerische Richard-Wagner-Gesellschaft</li>
+                            <li>Richard Wagner-Verband Köln</li>
+                            <li>Ehrenamtliche Kirchenaufsicht in St. Pantaleon in Köln (älteste der zwölf romanischen Kirchen Kölns)</li>
+                            <li>IGAV – Interessengemeinschaft Altersversorgung e. V.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- KONTAKT, IMPRESSUM & DATENSCHUTZ -->
+    <footer id="kontakt">
+        <div class="footer-inner">
+            <div class="contact-bar">
+                <div>
+                    <h2 style="color: var(--accent-primary); font-size: 1.5rem; margin-bottom: 0.25rem;">Austausch & Kontakt</h2>
+                    <p style="color: var(--text-muted);">Über Rückmeldungen, Anregungen und Gespräche freue ich mich sehr.</p>
+                </div>
+                <a href="mailto:oliver.gross.koeln@gmail.com" class="btn-link">oliver.gross.koeln@gmail.com</a>
+            </div>
+
+            <div class="legal-grid">
+                <div>
+                    <h3>Impressum</h3>
+                    <p><strong>Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz):</strong><br>
+                    Oliver Groß<br>
+                    [Straße und Hausnummer bitte ergänzen]<br>
+                    [PLZ und Ort bitte ergänzen]</p>
+                    <p><strong>Kontakt:</strong><br>
+                    E-Mail: <a href="mailto:oliver.gross.koeln@gmail.com" style="color: var(--accent-primary);">oliver.gross.koeln@gmail.com</a><br>
+                    Telefon: [Telefonnummer bitte ergänzen]</p>
+                    <p><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</strong><br>
+                    Oliver Groß (Anschrift wie oben)</p>
+                </div>
+
+                <div>
+                    <h3>Datenschutzhinweise</h3>
+                    <p><strong>1. Grundsatz & Datensparsamkeit:</strong><br>
+                    Diese Webseite ist eine rein statische Informationsseite. Es werden keine Cookies gesetzt, keine Tracking- oder Analyse-Werkzeuge (wie Google Analytics) verwendet und keine Nutzerprofile erstellt.</p>
+                    <p><strong>2. Hosting & Server-Logfiles:</strong><br>
+                    Beim Aufruf dieser Webseite übermittelt Ihr Browser aus technischen Gründen automatisch Daten (z. B. IP-Adresse, Zeitpunkt des Abrufs, Browsertyp) an den Hosting-Anbieter (GitHub Pages / GitHub Inc.). Dies dient ausschließlich der technischen Bereitstellung und Sicherheit der Seite (Art. 6 Abs. 1 lit. f DSGVO).</p>
+                    <p><strong>3. Kontaktaufnahme per E-Mail:</strong><br>
+                    Wenn Sie per E-Mail Kontakt aufnehmen, werden Ihre Angaben inklusive Ihrer E-Mail-Adresse ausschließlich zur Bearbeitung Ihrer Anfrage gespeichert und nicht ohne Ihre Einwilligung an Dritte weitergegeben (Art. 6 Abs. 1 lit. b bzw. lit. a DSGVO).</p>
+                    <p><strong>4. Ihre Rechte:</strong><br>
+                    Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf Auskunft, Berichtigung, Löschung oder Einschränkung der Verarbeitung Ihrer personenbezogenen Daten.</p>
+                </div>
+            </div>
+
+            <div class="copyright">
+                © 2026 Oliver Groß – Oliver on Tour · „weil ich es liebe“
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function closeMenu() {
+            const nav = document.getElementById('main-nav');
+            if (nav.classList.contains('open')) {
+                nav.classList.remove('open');
+            }
+        }
+    </script>
+</body>
+</html>
